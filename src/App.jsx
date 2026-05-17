@@ -1,45 +1,99 @@
 import { useState } from "react";
-import Login from "./components/Login"; // Asegúrate de tener estas rutas
-import PlantDashboard from "./components/PlantDashboard";
+import Login from "./components/Login";
+import PlantDashboard from './components/PlantDashboard';
+import PlantForm from './components/PlantForm';
 
 function App() {
-  // Inicializamos el estado mirando si ya hay un token guardado
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('auth_token'));
+  const [view, setView] = useState('dashboard'); // 'dashboard' | 'new-plant' | 'plant-detail'
+  const [selectedPlant, setSelectedPlant] = useState(null);
 
   const handleLogout = () => {
     localStorage.removeItem('auth_token');
+    localStorage.removeItem('username');
     setIsAuthenticated(false);
   };
 
-  // Si no está autenticado, mostramos el Login
+  const handleViewPlant = (plant) => {
+    setSelectedPlant(plant);
+    setView('plant-detail');
+  };
+
   if (!isAuthenticated) {
     return <Login onLoginSuccess={() => setIsAuthenticated(true)} />;
   }
 
-  // Si está autenticado, mostramos la App real
+  // ── Vistas sin nav (pantalla completa) ──
+  if (view === 'new-plant') {
+    return (
+      <PlantForm
+        onSuccess={() => setView('dashboard')}
+        onCancel={() => setView('dashboard')}
+      />
+    );
+  }
+
+  // ── Vistas con nav ──
   return (
-    <div className="app-container">
+    <div>
       <nav style={styles.nav}>
         <span>🌿 DramaGreen</span>
-        <button onClick={handleLogout} style={styles.logoutBtn}>Salir</button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <span style={{ fontSize: '14px', opacity: 0.8 }}>
+            {localStorage.getItem('username')}
+          </span>
+          <button onClick={handleLogout} style={styles.logoutBtn}>Salir</button>
+        </div>
       </nav>
-      
-      <main style={{ padding: '20px' }}>
-        <PlantDashboard />
+
+      <main>
+        {view === 'dashboard' && (
+          <PlantDashboard
+            onViewPlant={handleViewPlant}
+            onNewPlant={() => setView('new-plant')}
+          />
+        )}
+
+        {view === 'plant-detail' && selectedPlant && (
+          <div style={{ padding: '20px' }}>
+            <button onClick={() => setView('dashboard')} style={styles.backBtn}>
+              ← Volver
+            </button>
+            <h2>{selectedPlant.nickname}</h2>
+            <p>Ficha completa — próximamente</p>
+          </div>
+        )}
       </main>
     </div>
   );
 }
 
 const styles = {
-  nav: { 
-    display: 'flex', 
-    justifyContent: 'space-between', 
-    padding: '1rem', 
-    backgroundColor: '#2d5a27', 
-    color: 'white' 
+  nav: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '1rem 1.5rem',
+    backgroundColor: '#2D5239',
+    color: 'white',
   },
-  logoutBtn: { backgroundColor: '#e74c3c', color: 'white', border: 'none', padding: '5px 10px', cursor: 'pointer' }
+  logoutBtn: {
+    backgroundColor: '#e74c3c',
+    color: 'white',
+    border: 'none',
+    padding: '6px 14px',
+    borderRadius: '6px',
+    cursor: 'pointer',
+  },
+  backBtn: {
+    background: 'none',
+    border: '1px solid #ccc',
+    padding: '6px 14px',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    marginBottom: '16px',
+    fontSize: '14px',
+  }
 };
 
-export default App; // <--- IMPORTANTE: Exportar el componente, no el API
+export default App;

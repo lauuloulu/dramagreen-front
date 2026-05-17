@@ -1,0 +1,15 @@
+export const PLANT_AVATARS = [
+  { id: 'monstera',  url: '/avatars/plants/monstera.png',  label: 'Monstera' },
+  { id: 'pothos',    url: '/avatars/plants/pothos.png',    label: 'Pothos' },
+  { id: 'cactusLargo',   url: '/avatars/plants/cactusLargo.png',    label: 'Cactus Largo' },
+  { id: 'cactusRedondo',   url: '/avatars/plants/cactusRedondo.png',    label: 'Cactus' },
+  { id: 'orquidea', url: '/avatars/plants/orquidea.png',  label: 'Orquídea' },
+  { id: 'ficusGrande',    url: '/avatars/plants/ficusGrande.png',     label: 'Ficus' },
+  { id: 'aloeVera',     url: '/avatars/plants/aloeVera.png',      label: 'Aloe Vera' },
+  { id: 'aveParaiso',     url: '/avatars/plants/aveParaiso.png',      label: 'Ave Paraíso' },
+  { id: 'begoniaMaculata',     url: '/avatars/plants/begoniaMaculata.png',      label: 'Begonia Maculata' },
+  { id: 'bonsaiUno',     url: '/avatars/plants/bonsaiUno.png',      label: 'Bonsai Verde' },
+  { id: 'bonsaiDos',     url: '/avatars/plants/bonsaiDos.png',      label: 'Bonsai Rojo' },
+  { id: 'cunaMoises',     url: '/avatars/plants/cunaMoises.png',      label: 'Cuna de Moisés' },
+  { id: 'lenguaSuegra',     url: '/avatars/plants/lenguaSuegra.png',      label: 'Lengua de Suegra' },
+];
