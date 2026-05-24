@@ -9,12 +9,15 @@ const LOCATION_ICONS = {
   'Baño': '🚿', 'Estudio': '💻', 'Terraza': '🌤️',
 };
 
-const PlantForm = ({ onSuccess, onCancel }) => {
+// plant prop → modo edición. Sin plant → modo creación.
+const PlantForm = ({ plant, onSuccess, onCancel }) => {
+  const isEditing = !!plant;
+
   const [form, setForm] = useState({
-    nickname: '',
-    speciesName: '',
-    locationName: '',
-    imageUrl: '',
+    nickname:     plant?.nickname     || '',
+    speciesName:  plant?.speciesName  || '',
+    locationName: plant?.locationName || '',
+    imageUrl:     plant?.imageUrl     || '',
   });
   const [species, setSpecies]     = useState([]);
   const [locations, setLocations] = useState([]);
@@ -74,7 +77,11 @@ const PlantForm = ({ onSuccess, onCancel }) => {
     setLoading(true);
     setError('');
     try {
-      await axios.post('http://localhost:9000/api/plants', form);
+      if (isEditing) {
+        await axios.put(`http://localhost:9000/api/plants/${plant.id}`, form);
+      } else {
+        await axios.post('http://localhost:9000/api/plants', form);
+      }
       onSuccess?.();
     } catch (err) {
       setError(err.response?.data?.message || 'Error al guardar la planta');
@@ -131,7 +138,9 @@ const PlantForm = ({ onSuccess, onCancel }) => {
 
         {/* ── Cabecera ── */}
         <div style={{
-          background: 'linear-gradient(135deg, #2D5239 0%, #355E45 100%)',
+          background: isEditing
+            ? 'linear-gradient(135deg, #4A3728 0%, #7D5A3C 100%)'  // marrón en edición
+            : 'linear-gradient(135deg, #2D5239 0%, #355E45 100%)', // verde en creación
           padding: '28px 28px 24px',
         }}>
           <button onClick={onCancel} style={{
@@ -143,12 +152,16 @@ const PlantForm = ({ onSuccess, onCancel }) => {
             ← Volver
           </button>
           <h1 style={{ margin: 0, color: '#fff', fontSize: '24px', fontWeight: 800 }}>
-            {step === 1 ? '🌱 Nueva planta' : '🎨 Elige su avatar'}
+            {isEditing
+              ? (step === 1 ? `✏️ Editar ${plant.nickname}` : '🎨 Cambiar avatar')
+              : (step === 1 ? '🌱 Nueva planta' : '🎨 Elige su avatar')
+            }
           </h1>
-          <p style={{ margin: '6px 0 16px', color: '#A8C9B0', fontSize: '14px' }}>
-            {step === 1
-              ? 'Cuéntanos sobre tu nueva compañera verde'
-              : 'Ponle cara a tu planta'}
+          <p style={{ margin: '6px 0 16px', color: '#D4C4B0', fontSize: '14px' }}>
+            {isEditing
+              ? (step === 1 ? 'Modifica los datos de tu planta' : 'Cambia la imagen si quieres')
+              : (step === 1 ? 'Cuéntanos sobre tu nueva compañera verde' : 'Ponle cara a tu planta')
+            }
           </p>
           {/* Indicador de pasos */}
           <div style={{ display: 'flex', gap: '6px' }}>
@@ -208,6 +221,11 @@ const PlantForm = ({ onSuccess, onCancel }) => {
                     <option key={s.id} value={s.commonName}>{s.commonName}</option>
                   ))}
                 </select>
+                {isEditing && (
+                  <p style={{ margin: '4px 0 0 4px', fontSize: '12px', color: '#AAA' }}>
+                    Especie actual: {plant.speciesName}
+                  </p>
+                )}
               </div>
 
               {/* Ubicación */}
@@ -255,7 +273,7 @@ const PlantForm = ({ onSuccess, onCancel }) => {
                 onMouseEnter={e => e.currentTarget.style.background = '#2D5239'}
                 onMouseLeave={e => e.currentTarget.style.background = '#355E45'}
               >
-                Siguiente → Elegir avatar
+                Siguiente → {isEditing ? 'Cambiar avatar' : 'Elegir avatar'}
               </button>
             </div>
           )}
@@ -264,7 +282,7 @@ const PlantForm = ({ onSuccess, onCancel }) => {
           {step === 2 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
-              {/* Preview de la planta */}
+              {/* Preview */}
               <div style={{
                 background: '#F7F3EE', borderRadius: '16px',
                 padding: '16px', display: 'flex', alignItems: 'center', gap: '14px',
@@ -299,14 +317,16 @@ const PlantForm = ({ onSuccess, onCancel }) => {
 
               {/* Selector de avatares */}
               <div>
-                <label style={labelStyle}>ELIGE UN AVATAR</label>
+                <label style={labelStyle}>
+                  {isEditing ? 'CAMBIAR AVATAR' : 'ELIGE UN AVATAR'}
+                </label>
                 <AvatarSelector
                   selected={form.imageUrl}
                   onChange={url => handleChange('imageUrl', url)}
                 />
                 {!form.imageUrl && (
                   <p style={{ margin: '8px 0 0', fontSize: '12px', color: '#AAA', textAlign: 'center' }}>
-                    Puedes dejarlo sin avatar y añadirlo después
+                    {isEditing ? 'Selecciona un nuevo avatar o deja el actual' : 'Puedes dejarlo sin avatar y añadirlo después'}
                   </p>
                 )}
               </div>
@@ -321,11 +341,15 @@ const PlantForm = ({ onSuccess, onCancel }) => {
                     ...btnPrimary,
                     opacity: loading ? 0.7 : 1,
                     cursor: loading ? 'not-allowed' : 'pointer',
+                    background: isEditing ? '#7D5A3C' : '#355E45',
                   }}
-                  onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#2D5239'; }}
-                  onMouseLeave={e => { if (!loading) e.currentTarget.style.background = '#355E45'; }}
+                  onMouseEnter={e => { if (!loading) e.currentTarget.style.background = isEditing ? '#5C3D1E' : '#2D5239'; }}
+                  onMouseLeave={e => { if (!loading) e.currentTarget.style.background = isEditing ? '#7D5A3C' : '#355E45'; }}
                 >
-                  {loading ? '⏳ Guardando...' : '✅ Añadir planta'}
+                  {loading
+                    ? '⏳ Guardando...'
+                    : isEditing ? '💾 Guardar cambios' : '✅ Añadir planta'
+                  }
                 </button>
                 <button onClick={() => setStep(1)} style={btnSecondary}>
                   ← Volver atrás

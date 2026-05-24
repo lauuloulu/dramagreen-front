@@ -2,6 +2,8 @@ import { useState } from "react";
 import Login from "./components/Login";
 import PlantDashboard from './components/PlantDashboard';
 import PlantForm from './components/PlantForm';
+import SpeciesForm from './components/Speciesform';
+import PlantDetail from './components/PlantDetail';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('auth_token'));
@@ -23,6 +25,15 @@ function App() {
     return <Login onLoginSuccess={() => setIsAuthenticated(true)} />;
   }
 
+  {
+    view === 'new-species' && (
+      <SpeciesForm
+        onSuccess={() => setView('dashboard')}
+        onCancel={() => setView('dashboard')}
+      />
+    )
+  }
+
   // ── Vistas sin nav (pantalla completa) ──
   if (view === 'new-plant') {
     return (
@@ -32,6 +43,17 @@ function App() {
       />
     );
   }
+  else {
+    view === 'edit-plant' && selectedPlant && (
+      <PlantForm
+        plant={selectedPlant}
+        onSuccess={() => setView('plant-detail')}
+        onCancel={() => setView('plant-detail')}
+      />
+    )
+  }
+
+
 
   // ── Vistas con nav ──
   return (
@@ -51,17 +73,24 @@ function App() {
           <PlantDashboard
             onViewPlant={handleViewPlant}
             onNewPlant={() => setView('new-plant')}
+            onNewSpecies={() => setView('new-species')}
+          />
+        )}
+
+        {view === 'new-species' && (
+          <SpeciesForm
+            onSuccess={() => setView('dashboard')}
+            onCancel={() => setView('dashboard')}
           />
         )}
 
         {view === 'plant-detail' && selectedPlant && (
-          <div style={{ padding: '20px' }}>
-            <button onClick={() => setView('dashboard')} style={styles.backBtn}>
-              ← Volver
-            </button>
-            <h2>{selectedPlant.nickname}</h2>
-            <p>Ficha completa — próximamente</p>
-          </div>
+          <PlantDetail
+            plantId={selectedPlant.id}
+            onBack={() => setView('dashboard')}
+            onEdit={(plant) => { setSelectedPlant(plant); setView('edit-plant'); }}
+            onDeleted={() => setView('dashboard')}
+          />
         )}
       </main>
     </div>

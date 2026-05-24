@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import PlantCard from './PlantCard';
-import WateringInfo from './WateringInfo';
 import { ROOMS } from '../constants/rooms';
+import { getWateringInfo } from '../utils/WateringUtils';
 
-const PlantDashboard = ({ onViewPlant, onNewPlant }) => {
-  const [plants, setPlants]         = useState([]);
-  const [loading, setLoading]       = useState(true);
-  const [roomIndex, setRoomIndex]   = useState(0);
-  const [animDir, setAnimDir]       = useState(null); // 'left' | 'right'
-  const [visible, setVisible]       = useState(true);
- 
+const PlantDashboard = ({ onViewPlant, onNewPlant, onNewSpecies }) => {
+  const [plants, setPlants] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [roomIndex, setRoomIndex] = useState(0);
+  const [animDir, setAnimDir] = useState(null); // 'left' | 'right'
+  const [visible, setVisible] = useState(true);
+
   useEffect(() => {
     const fetchPlants = async () => {
       try {
@@ -19,12 +19,12 @@ const PlantDashboard = ({ onViewPlant, onNewPlant }) => {
       } catch {
         // Mock para desarrollo
         setPlants([
-          { id: 1, nickname: 'Carmela',  speciesName: 'Monstera deliciosa', locationName: 'Salón',      imageUrl: '/avatars/plants/monstera.png',   lastWatered: '2026-05-10', wateringFrequency: 7  },
-          { id: 2, nickname: 'Pepita',   speciesName: 'Epipremnum aureum',  locationName: 'Cocina',     imageUrl: '/avatars/plants/pothos.png',      lastWatered: '2026-05-08', wateringFrequency: 5  },
-          { id: 3, nickname: 'Señor Pinchos', speciesName: 'Echinopsis',   locationName: 'Estudio',    imageUrl: '/avatars/plants/cactusLargo.png', lastWatered: '2026-04-20', wateringFrequency: 21 },
-          { id: 4, nickname: 'Diva',     speciesName: 'Phalaenopsis',      locationName: 'Dormitorio', imageUrl: '/avatars/plants/orquidea.png',    lastWatered: '2026-05-12', wateringFrequency: 10 },
-          { id: 5, nickname: 'Gigante',  speciesName: 'Ficus lyrata',      locationName: 'Salón',      imageUrl: '/avatars/plants/ficusGrande.png', lastWatered: '2026-05-09', wateringFrequency: 6  },
-          { id: 6, nickname: 'Cleopatra',speciesName: 'Aloe barbadensis',  locationName: 'Baño',       imageUrl: '/avatars/plants/aloeVera.png',    lastWatered: '2026-04-28', wateringFrequency: 14 },
+          { id: 1, nickname: 'Carmela', speciesName: 'Monstera deliciosa', locationName: 'Salón', imageUrl: '/avatar/plants/monstera.png', lastWatered: '2026-05-10', wateringFrequency: 7 },
+          { id: 2, nickname: 'Pepita', speciesName: 'Epipremnum aureum', locationName: 'Cocina', imageUrl: '/avatar/plants/pothos.png', lastWatered: '2026-05-08', wateringFrequency: 5 },
+          { id: 3, nickname: 'Señor Pinchos', speciesName: 'Echinopsis', locationName: 'Estudio', imageUrl: '/avatar/plants/cactusLargo.png', lastWatered: '2026-04-20', wateringFrequency: 21 },
+          { id: 4, nickname: 'Diva', speciesName: 'Phalaenopsis', locationName: 'Dormitorio', imageUrl: '/avatar/plants/orquidea.png', lastWatered: '2026-05-12', wateringFrequency: 10 },
+          { id: 5, nickname: 'Gigante', speciesName: 'Ficus lyrata', locationName: 'Salón', imageUrl: '/avatar/plants/ficusGrande.png', lastWatered: '2026-05-09', wateringFrequency: 6 },
+          { id: 6, nickname: 'Cleopatra', speciesName: 'Aloe barbadensis', locationName: 'Baño', imageUrl: '/avatar/plants/aloeVera.png', lastWatered: '2026-04-28', wateringFrequency: 14 },
         ]);
       } finally {
         setLoading(false);
@@ -32,29 +32,29 @@ const PlantDashboard = ({ onViewPlant, onNewPlant }) => {
     };
     fetchPlants();
   }, []);
- 
-  const currentRoom  = ROOMS[roomIndex];
-  const roomPlants   = plants.filter(p => p.locationName === currentRoom.key);
-  const urgentCount  = plants.filter(p => {
-    const { daysLeft } = WateringInfo(p.lastWatered, p.wateringFrequency) ;
+
+  const currentRoom = ROOMS[roomIndex];
+  const roomPlants = plants.filter(p => p.locationName === currentRoom.key);
+  const urgentCount = plants.filter(p => {
+    const { daysLeft } = getWateringInfo(p.lastWatered, p.wateringFrequency);
     return typeof daysLeft !== 'undefined' && daysLeft <= 0;
   }).length;
- 
+
   const navigate = (dir) => {
     const newIndex = dir === 'next'
       ? (roomIndex + 1) % ROOMS.length
       : (roomIndex - 1 + ROOMS.length) % ROOMS.length;
- 
+
     setAnimDir(dir === 'next' ? 'left' : 'right');
     setVisible(false);
- 
+
     setTimeout(() => {
       setRoomIndex(newIndex);
       setAnimDir(null);
       setVisible(true);
     }, 220);
   };
- 
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -68,7 +68,7 @@ const PlantDashboard = ({ onViewPlant, onNewPlant }) => {
         @keyframes fadeIn      { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes shimmer     { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
       `}</style>
- 
+
       {/* ── Barra superior ── */}
       <div style={{
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -98,8 +98,20 @@ const PlantDashboard = ({ onViewPlant, onNewPlant }) => {
         >
           + Nueva planta
         </button>
+        <button
+          onClick={onNewSpecies}
+          style={{
+            background: '#4A7C5E', color: '#fff', border: 'none', borderRadius: '12px',
+            padding: '10px 18px', fontSize: '14px', fontWeight: 700,
+            cursor: 'pointer', fontFamily: 'inherit'
+          }}
+          onMouseEnter={e => e.currentTarget.style.background = '#355E45'}
+          onMouseLeave={e => e.currentTarget.style.background = '#4A7C5E'}
+        >
+          + Nueva especie
+        </button>
       </div>
- 
+
       {/* ── Imagen de habitación ── */}
       <div style={{ position: 'relative', height: '320px', overflow: 'hidden' }}>
         {/* Imagen */}
@@ -119,14 +131,14 @@ const PlantDashboard = ({ onViewPlant, onNewPlant }) => {
           }}
           onError={e => { e.target.style.display = 'none'; }}
         />
- 
+
         {/* Gradiente inferior */}
         <div style={{
           position: 'absolute', bottom: 0, left: 0, right: 0,
           height: '160px',
           background: 'linear-gradient(to top, #F2EDE6 0%, transparent 100%)',
-        }}/>
- 
+        }} />
+
         {/* Nombre de habitación sobre la imagen */}
         <div style={{
           position: 'absolute', bottom: '24px', left: '24px',
@@ -148,7 +160,7 @@ const PlantDashboard = ({ onViewPlant, onNewPlant }) => {
             }
           </p>
         </div>
- 
+
         {/* Flechas de navegación */}
         <button
           onClick={() => navigate('prev')}
@@ -184,7 +196,7 @@ const PlantDashboard = ({ onViewPlant, onNewPlant }) => {
         >
           →
         </button>
- 
+
         {/* Indicadores de puntos */}
         <div style={{
           position: 'absolute', bottom: '16px', right: '24px',
@@ -210,10 +222,10 @@ const PlantDashboard = ({ onViewPlant, onNewPlant }) => {
           ))}
         </div>
       </div>
- 
+
       {/* ── Plantas de la habitación ── */}
       <div style={{ padding: '8px 20px 40px' }}>
- 
+
         {loading ? (
           <div style={{
             display: 'grid',
@@ -225,7 +237,7 @@ const PlantDashboard = ({ onViewPlant, onNewPlant }) => {
                 height: '180px', borderRadius: '18px',
                 background: '#E8E0D5',
                 animation: 'shimmer 1.5s ease-in-out infinite',
-              }}/>
+              }} />
             ))}
           </div>
         ) : roomPlants.length === 0 ? (
@@ -278,5 +290,5 @@ const PlantDashboard = ({ onViewPlant, onNewPlant }) => {
     </div>
   );
 };
- 
+
 export default PlantDashboard;
