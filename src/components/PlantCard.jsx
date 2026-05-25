@@ -18,8 +18,8 @@ const PlantCard = ({ plant, onClick, onWatered }) => {
             const { data } = await axios.post(
                 `http://localhost:9000/api/plants/${localPlant.id}/water`
             );
-            setLocalPlant(data);    // actualizar la card sin recargar
-            onWatered?.();          // avisar al dashboard si lo necesita
+            setLocalPlant(data);
+            onWatered?.();
         } catch (err) {
             console.error('Error al regar:', err);
         } finally {

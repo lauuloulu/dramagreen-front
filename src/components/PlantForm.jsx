@@ -14,16 +14,17 @@ const PlantForm = ({ plant, onSuccess, onCancel }) => {
   const isEditing = !!plant;
 
   const [form, setForm] = useState({
-    nickname:     plant?.nickname     || '',
-    speciesName:  plant?.speciesName  || '',
+    nickname: plant?.nickname || '',
+    speciesName: plant?.speciesName || '',
     locationName: plant?.locationName || '',
-    imageUrl:     plant?.imageUrl     || '',
+    imageUrl: plant?.imageUrl || '',
+    status: plant?.status || 'ALIVE',
   });
-  const [species, setSpecies]     = useState([]);
+  const [species, setSpecies] = useState([]);
   const [locations, setLocations] = useState([]);
-  const [loading, setLoading]     = useState(false);
-  const [error, setError]         = useState('');
-  const [step, setStep]           = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [step, setStep] = useState(1);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,8 +63,8 @@ const PlantForm = ({ plant, onSuccess, onCancel }) => {
 
   const validateStep1 = () => {
     if (!form.nickname.trim()) return 'Dale un nombre a tu planta';
-    if (!form.speciesName)     return 'Selecciona una especie';
-    if (!form.locationName)    return 'Selecciona una ubicación';
+    if (!form.speciesName) return 'Selecciona una especie';
+    if (!form.locationName) return 'Selecciona una ubicación';
     return '';
   };
 
@@ -77,18 +78,19 @@ const PlantForm = ({ plant, onSuccess, onCancel }) => {
     setLoading(true);
     setError('');
     try {
-      if (isEditing) {
-        await axios.put(`http://localhost:9000/api/plants/${plant.id}`, form);
-      } else {
-        await axios.post('http://localhost:9000/api/plants', form);
-      }
-      onSuccess?.();
+        if (isEditing) {
+            const res = await axios.put(`http://localhost:9000/api/plants/${plant.id}`, form);
+            onSuccess?.(res.data);
+        } else {
+            await axios.post('http://localhost:9000/api/plants', form);
+            onSuccess?.();
+        }
     } catch (err) {
-      setError(err.response?.data?.message || 'Error al guardar la planta');
+        setError(err.response?.data?.message || 'Error al guardar la planta');
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
 
   const labelStyle = {
     display: 'block',
@@ -170,7 +172,7 @@ const PlantForm = ({ plant, onSuccess, onCancel }) => {
                 height: '4px', flex: 1, borderRadius: '2px',
                 background: s <= step ? '#fff' : 'rgba(255,255,255,0.3)',
                 transition: 'background 0.3s',
-              }}/>
+              }} />
             ))}
           </div>
         </div>
@@ -264,6 +266,43 @@ const PlantForm = ({ plant, onSuccess, onCancel }) => {
                   })}
                 </div>
               </div>
+              {/* Estado */}
+              {isEditing && (
+                <div>
+                  <label style={labelStyle}>ESTADO DE LA PLANTA</label>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
+                    {[
+                      { value: 'ALIVE', emoji: '💚', label: 'Sana' },
+                      { value: 'DRY', emoji: '🏜️', label: 'Seca' },
+                      { value: 'SICK', emoji: '🤒', label: 'Enferma' },
+                      { value: 'DEAD', emoji: '💀', label: 'Muerta' },
+                    ].map(s => {
+                      const isSelected = form.status === s.value;
+                      return (
+                        <div
+                          key={s.value}
+                          onClick={() => handleChange('status', s.value)}
+                          style={{
+                            padding: '10px 6px', borderRadius: '12px', cursor: 'pointer',
+                            border: isSelected ? '2px solid #355E45' : '2px solid #E8E0D5',
+                            background: isSelected ? '#EDF5EF' : '#FAF8F5',
+                            textAlign: 'center', transition: 'all 0.15s',
+                          }}
+                        >
+                          <div style={{ fontSize: '20px', marginBottom: '3px' }}>{s.emoji}</div>
+                          <div style={{
+                            fontSize: '12px', fontFamily: 'inherit',
+                            fontWeight: isSelected ? 700 : 400,
+                            color: isSelected ? '#355E45' : '#666',
+                          }}>
+                            {s.label}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
               {error && <ErrorBox message={error} />}
 
@@ -295,10 +334,10 @@ const PlantForm = ({ plant, onSuccess, onCancel }) => {
                 }}>
                   {form.imageUrl
                     ? <img
-                        src={form.imageUrl} alt=""
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        onError={e => { e.target.style.display = 'none'; e.target.parentNode.innerText = '🌿'; }}
-                      />
+                      src={form.imageUrl} alt=""
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      onError={e => { e.target.style.display = 'none'; e.target.parentNode.innerText = '🌿'; }}
+                    />
                     : '🌿'
                   }
                 </div>

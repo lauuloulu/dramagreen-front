@@ -9,6 +9,7 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('auth_token'));
   const [view, setView] = useState('dashboard'); // 'dashboard' | 'new-plant' | 'plant-detail'
   const [selectedPlant, setSelectedPlant] = useState(null);
+  const [detailKey, setDetailKey] = useState(0); // Para forzar re-render en PlantDetail
 
   const handleLogout = () => {
     localStorage.removeItem('auth_token');
@@ -43,14 +44,18 @@ function App() {
       />
     );
   }
-  else {
-    view === 'edit-plant' && selectedPlant && (
-      <PlantForm
-        plant={selectedPlant}
-        onSuccess={() => setView('plant-detail')}
-        onCancel={() => setView('plant-detail')}
-      />
-    )
+  if (view === 'edit-plant' && selectedPlant) {
+  return (
+        <PlantForm
+            plant={selectedPlant}
+            onSuccess={(updatedPlant) => {
+                if (updatedPlant) setSelectedPlant(updatedPlant);
+                setDetailKey(k => k + 1); // ← fuerza remount
+                setView('plant-detail');
+            }}
+            onCancel={() => setView('plant-detail')}
+        />
+    );
   }
 
 
@@ -86,6 +91,7 @@ function App() {
 
         {view === 'plant-detail' && selectedPlant && (
           <PlantDetail
+            key={detailKey}
             plantId={selectedPlant.id}
             onBack={() => setView('dashboard')}
             onEdit={(plant) => { setSelectedPlant(plant); setView('edit-plant'); }}

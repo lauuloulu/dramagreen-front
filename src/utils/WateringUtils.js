@@ -7,7 +7,7 @@ export const getWateringInfo = (lastWatered, frequency) => {
     today.setHours(0, 0, 0, 0);
     const daysSince = Math.floor((today - last) / 86_400_000);
     const daysLeft = frequency - daysSince;
-    const ratio = Math.min(daysSince / frequency, 1);
+    const ratio = Math.max(1 - daysSince / frequency, 0);
 
     if (daysLeft > Math.ceil(frequency * 0.4))
         return { ratio, color: '#4CAF50', label: `${daysLeft}d`, emoji: '💧', daysLeft };
