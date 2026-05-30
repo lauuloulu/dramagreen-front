@@ -1,5 +1,8 @@
 import { useState } from "react";
 import Login from "./components/Login";
+import Register from "./components/Register";
+import ForgotPassword from "./components/ForgotPassword";
+import ResetPassword from "./components/ResetPassword";
 import PlantDashboard from './components/PlantDashboard';
 import PlantForm from './components/PlantForm';
 import SpeciesForm from './components/Speciesform';
@@ -7,6 +10,7 @@ import PlantDetail from './components/PlantDetail';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('auth_token'));
+  const [authView, setAuthView]   = useState('login');
   const [view, setView] = useState('dashboard'); // 'dashboard' | 'new-plant' | 'plant-detail'
   const [selectedPlant, setSelectedPlant] = useState(null);
   const [detailKey, setDetailKey] = useState(0); // Para forzar re-render en PlantDetail
@@ -15,6 +19,7 @@ function App() {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('username');
     setIsAuthenticated(false);
+    setAuthView('login');
   };
 
   const handleViewPlant = (plant) => {
@@ -23,19 +28,18 @@ function App() {
   };
 
   if (!isAuthenticated) {
-    return <Login onLoginSuccess={() => setIsAuthenticated(true)} />;
-  }
-
-  {
-    view === 'new-species' && (
-      <SpeciesForm
-        onSuccess={() => setView('dashboard')}
-        onCancel={() => setView('dashboard')}
+    if (authView === 'register') return <Register onGoLogin={() => setAuthView('login')} />;
+    if (authView === 'forgot')   return <ForgotPassword onGoLogin={() => setAuthView('login')} />;
+    if (authView === 'reset')    return <ResetPassword onGoLogin={() => setAuthView('login')} />;
+    return (
+      <Login
+        onLoginSuccess={() => setIsAuthenticated(true)}
+        onGoRegister={() => setAuthView('register')}
+        onGoForgot={() => setAuthView('forgot')}
       />
-    )
+    );
   }
 
-  // ── Vistas sin nav (pantalla completa) ──
   if (view === 'new-plant') {
     return (
       <PlantForm
@@ -44,6 +48,16 @@ function App() {
       />
     );
   }
+
+  if (view === 'new-species') {
+    return (
+      <SpeciesForm
+        onSuccess={() => setView('dashboard')}
+        onCancel={() => setView('dashboard')}
+      />
+    );
+  }
+  
   if (view === 'edit-plant' && selectedPlant) {
   return (
         <PlantForm
@@ -81,14 +95,6 @@ function App() {
             onNewSpecies={() => setView('new-species')}
           />
         )}
-
-        {view === 'new-species' && (
-          <SpeciesForm
-            onSuccess={() => setView('dashboard')}
-            onCancel={() => setView('dashboard')}
-          />
-        )}
-
         {view === 'plant-detail' && selectedPlant && (
           <PlantDetail
             key={detailKey}
@@ -105,30 +111,13 @@ function App() {
 
 const styles = {
   nav: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '1rem 1.5rem',
-    backgroundColor: '#2D5239',
-    color: 'white',
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    padding: '1rem 1.5rem', backgroundColor: '#2D5239', color: 'white',
   },
   logoutBtn: {
-    backgroundColor: '#e74c3c',
-    color: 'white',
-    border: 'none',
-    padding: '6px 14px',
-    borderRadius: '6px',
-    cursor: 'pointer',
+    backgroundColor: '#e74c3c', color: 'white', border: 'none',
+    padding: '6px 14px', borderRadius: '6px', cursor: 'pointer',
   },
-  backBtn: {
-    background: 'none',
-    border: '1px solid #ccc',
-    padding: '6px 14px',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    marginBottom: '16px',
-    fontSize: '14px',
-  }
 };
 
 export default App;
