@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { shared, BASE } from '../styles/authStyles';
+import { BASE } from '../styles/authStyles';
 
 export const Register = ({ onGoLogin }) => {
     const [form, setForm] = useState({ name: '', surname: '', email: '', password: '', confirmPassword: '' });
@@ -43,117 +43,105 @@ export const Register = ({ onGoLogin }) => {
         }
     };
 
-    // Preview del username generado
     const previewUsername = form.name && form.surname
         ? (form.name.charAt(0) + form.surname).toLowerCase().replaceAll(/[^a-z0-9]/g, '')
         : '';
 
     return (
-        <div style={shared.page}>
-            <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
-        input:focus { border-color: #355E45 !important; box-shadow: 0 0 0 3px #355E4520; }
-      `}</style>
+        <div className="auth-page">
+            <div className="auth-card" style={{ maxWidth: '440px' }}>
 
-            <div style={{ ...shared.card, maxWidth: '440px' }}>
-                <div style={shared.logo}>
-                    <span style={shared.logoEmoji}>🌱</span>
-                    <h1 style={shared.logoTitle}>Crear cuenta</h1>
-                    <p style={shared.logoSub}>Únete a DramaGreen</p>
+                {/* Logo */}
+                <div className="auth-logo">
+                    <span className="auth-logo__emoji">🌱</span>
+                    <h1 className="auth-logo__title">Crear cuenta</h1>
+                    <p className="auth-logo__sub">Únete a DramaGreen</p>
                 </div>
 
-                {success
-                    ? (
-                        <div>
-                            <div style={shared.success}>✅ {success}</div>
-                            <button
-                                onClick={onGoLogin}
-                                style={shared.btnPrimary}
-                                onMouseEnter={e => e.currentTarget.style.background = '#2D5239'}
-                                onMouseLeave={e => e.currentTarget.style.background = '#355E45'}
-                            >
-                                Ir al login
-                            </button>
+                {success ? (
+                    <div>
+                        <div className="alert alert--success">✅ {success}</div>
+                        <button onClick={onGoLogin} className="btn btn--primary" style={{ marginTop: '16px' }}>
+                            Ir al login
+                        </button>
+                    </div>
+                ) : (
+                    <form onSubmit={handleSubmit} className="form">
+
+                        {/* Nombre + apellido */}
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label className="form-label">Nombre</label>
+                                <input
+                                    name="name" placeholder="Laura"
+                                    value={form.name} onChange={handleChange}
+                                    className="form-input" autoComplete="given-name"
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">Apellido</label>
+                                <input
+                                    name="surname" placeholder="Prat"
+                                    value={form.surname} onChange={handleChange}
+                                    className="form-input" autoComplete="family-name"
+                                />
+                            </div>
                         </div>
-                    )
-                    : (
-                        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
 
-                            {/* Nombre + apellido en fila */}
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                                <div>
-                                    <label style={shared.label}>NOMBRE</label>
-                                    <input
-                                        name="name" placeholder="Laura"
-                                        value={form.name} onChange={handleChange}
-                                        style={shared.input} autoComplete="given-name"
-                                    />
-                                </div>
-                                <div>
-                                    <label style={shared.label}>APELLIDO</label>
-                                    <input
-                                        name="surname" placeholder="Prat"
-                                        value={form.surname} onChange={handleChange}
-                                        style={shared.input} autoComplete="family-name"
-                                    />
-                                </div>
+                        {/* Preview username */}
+                        {previewUsername && (
+                            <div style={{
+                                background: '#F7F3EE', borderRadius: '10px',
+                                padding: '8px 14px', fontSize: '13px', color: '#666',
+                            }}>
+                                Tu usuario será: <strong style={{ color: '#355E45' }}>@{previewUsername}</strong>
                             </div>
+                        )}
 
-                            {/* Preview username */}
-                            {previewUsername && (
-                                <div style={{
-                                    background: '#F7F3EE', borderRadius: '10px',
-                                    padding: '8px 14px', fontSize: '13px', color: '#666',
-                                }}>
-                                    Tu usuario será: <strong style={{ color: '#355E45' }}>@{previewUsername}</strong>
-                                </div>
-                            )}
+                        <div className="form-group">
+                            <label className="form-label">Email</label>
+                            <input
+                                name="email" type="email" placeholder="laura@ejemplo.com"
+                                value={form.email} onChange={handleChange}
+                                className="form-input" autoComplete="email"
+                            />
+                        </div>
 
-                            <div>
-                                <label style={shared.label}>EMAIL</label>
-                                <input
-                                    name="email" type="email" placeholder="laura@ejemplo.com"
-                                    value={form.email} onChange={handleChange}
-                                    style={shared.input} autoComplete="email"
-                                />
-                            </div>
+                        <div className="form-group">
+                            <label className="form-label">Contraseña</label>
+                            <input
+                                name="password" type="password" placeholder="Mínimo 6 caracteres"
+                                value={form.password} onChange={handleChange}
+                                className="form-input" autoComplete="new-password"
+                            />
+                        </div>
 
-                            <div>
-                                <label style={shared.label}>CONTRASEÑA</label>
-                                <input
-                                    name="password" type="password" placeholder="Mínimo 6 caracteres"
-                                    value={form.password} onChange={handleChange}
-                                    style={shared.input} autoComplete="new-password"
-                                />
-                            </div>
+                        <div className="form-group">
+                            <label className="form-label">Confirmar contraseña</label>
+                            <input
+                                name="confirmPassword" type="password" placeholder="Repite la contraseña"
+                                value={form.confirmPassword} onChange={handleChange}
+                                className="form-input" autoComplete="new-password"
+                            />
+                        </div>
 
-                            <div>
-                                <label style={shared.label}>CONFIRMAR CONTRASEÑA</label>
-                                <input
-                                    name="confirmPassword" type="password" placeholder="Repite la contraseña"
-                                    value={form.confirmPassword} onChange={handleChange}
-                                    style={shared.input} autoComplete="new-password"
-                                />
-                            </div>
+                        {error && <div className="alert alert--error">⚠️ {error}</div>}
 
-                            {error && <div style={shared.error}>⚠️ {error}</div>}
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="btn btn--primary"
+                        >
+                            {loading ? '⏳ Creando cuenta...' : '🌿 Crear cuenta'}
+                        </button>
 
-                            <button
-                                type="submit" disabled={loading}
-                                style={{ ...shared.btnPrimary, opacity: loading ? 0.7 : 1 }}
-                                onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#2D5239'; }}
-                                onMouseLeave={e => { if (!loading) e.currentTarget.style.background = '#355E45'; }}
-                            >
-                                {loading ? '⏳ Creando cuenta...' : '🌿 Crear cuenta'}
-                            </button>
+                        <div style={{ textAlign: 'center' }}>
+                            <span style={{ fontSize: '14px', color: '#888' }}>¿Ya tienes cuenta? </span>
+                            <span className="auth-link" onClick={onGoLogin}>Inicia sesión</span>
+                        </div>
 
-                            <div style={{ textAlign: 'center' }}>
-                                <span style={{ fontSize: '14px', color: '#888' }}>¿Ya tienes cuenta? </span>
-                                <span style={shared.link} onClick={onGoLogin}>Inicia sesión</span>
-                            </div>
-                        </form>
-                    )
-                }
+                    </form>
+                )}
             </div>
         </div>
     );

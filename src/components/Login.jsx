@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { shared, BASE } from '../styles/authStyles';
+import { BASE } from '../styles/authStyles';
 
 export const Login = ({ onLoginSuccess, onGoRegister, onGoForgot }) => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
-  const [error, setError] = useState('');
+  const [error, setError]   = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleChange = e => {
@@ -37,77 +37,74 @@ export const Login = ({ onLoginSuccess, onGoRegister, onGoForgot }) => {
   };
 
   return (
-    <div style={shared.page}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
-        input:focus { border-color: #355E45 !important; box-shadow: 0 0 0 3px #355E4520; }
-      `}</style>
+    <div className="auth-page">
+      <div className="auth-card">
 
-      <div style={shared.card}>
-        <div style={shared.logo}>
-          <span style={shared.logoEmoji}>🌿</span>
-          <h1 style={shared.logoTitle}>DramaGreen</h1>
-          <p style={shared.logoSub}>Tu jardín interior te espera</p>
+        {/* Logo */}
+        <div className="auth-logo">
+          <span className="auth-logo__emoji">🌿</span>
+          <h1 className="auth-logo__title">DramaGreen</h1>
+          <p className="auth-logo__sub">Tu jardín interior te espera</p>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div>
-            <label style={shared.label}>USUARIO</label>
+        {/* Formulario */}
+        <form onSubmit={handleSubmit} className="form">
+          <div className="form-group">
+            <label className="form-label">Usuario</label>
             <input
               name="username"
               placeholder="Tu nombre de usuario"
               value={credentials.username}
               onChange={handleChange}
-              style={shared.input}
+              className="form-input"
               autoComplete="username"
             />
           </div>
-          <div>
-            <label style={shared.label}>CONTRASEÑA</label>
+
+          <div className="form-group">
+            <label className="form-label">Contraseña</label>
             <input
               name="password"
               type="password"
               placeholder="Tu contraseña"
               value={credentials.password}
               onChange={handleChange}
-              style={shared.input}
+              className="form-input"
               autoComplete="current-password"
             />
           </div>
 
-          {error && <div style={shared.error}>⚠️ {error}</div>}
+          {error && <div className="alert alert--error">⚠️ {error}</div>}
 
           <button
             type="submit"
             disabled={loading}
-            style={{ ...shared.btnPrimary, opacity: loading ? 0.7 : 1 }}
-            onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#2D5239'; }}
-            onMouseLeave={e => { if (!loading) e.currentTarget.style.background = '#355E45'; }}
+            className="btn btn--primary"
           >
             {loading ? '⏳ Entrando...' : 'Entrar'}
           </button>
         </form>
 
-        {/* Links */}
+        {/* ¿Olvidaste contraseña? */}
         <div style={{ textAlign: 'center', marginTop: '16px' }}>
-          <span
-            style={shared.link}
-            onClick={onGoForgot}
-          >
+          <span className="auth-link" onClick={onGoForgot}>
             ¿Olvidaste tu contraseña?
           </span>
         </div>
 
-        <div style={shared.divider}>
-          <div style={{ flex: 1, height: '1px', background: '#EEE' }} />
+        {/* Divider */}
+        <div className="auth-divider">
+          <div className="auth-divider__line"/>
           <span>o</span>
-          <div style={{ flex: 1, height: '1px', background: '#EEE' }} />
+          <div className="auth-divider__line"/>
         </div>
 
+        {/* Registro */}
         <div style={{ textAlign: 'center' }}>
           <span style={{ fontSize: '14px', color: '#888' }}>¿No tienes cuenta? </span>
-          <span style={shared.link} onClick={onGoRegister}>Regístrate</span>
+          <span className="auth-link" onClick={onGoRegister}>Regístrate</span>
         </div>
+
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { shared, BASE } from '../styles/authStyles';
+import { BASE } from '../styles/authStyles';
 
 export const ForgotPassword = ({ onGoLogin }) => {
     const [email, setEmail] = useState('');
@@ -25,66 +25,60 @@ export const ForgotPassword = ({ onGoLogin }) => {
     };
 
     return (
-        <div style={shared.page}>
-            <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
-        input:focus { border-color: #355E45 !important; box-shadow: 0 0 0 3px #355E4520; }
-      `}</style>
+        <div className="auth-page">
+            <div className="auth-card">
 
-            <div style={shared.card}>
-                <div style={shared.logo}>
-                    <span style={shared.logoEmoji}>🔑</span>
-                    <h1 style={shared.logoTitle}>Recuperar contraseña</h1>
-                    <p style={shared.logoSub}>Te enviaremos un enlace a tu email</p>
+                {/* Logo */}
+                <div className="auth-logo">
+                    <span className="auth-logo__emoji">🔑</span>
+                    <h1 className="auth-logo__title">Recuperar contraseña</h1>
+                    <p className="auth-logo__sub">Te enviaremos un enlace a tu email</p>
                 </div>
 
-                {success
-                    ? (
-                        <div>
-                            <div style={shared.success}>
-                                ✅ ¡Email enviado! Revisa tu bandeja de entrada y sigue las instrucciones.
-                            </div>
-                            <button
-                                onClick={onGoLogin}
-                                style={{ ...shared.btnPrimary, marginTop: '16px' }}
-                                onMouseEnter={e => e.currentTarget.style.background = '#2D5239'}
-                                onMouseLeave={e => e.currentTarget.style.background = '#355E45'}
-                            >
-                                Volver al login
-                            </button>
+                {success ? (
+                    <div>
+                        <div className="alert alert--success">
+                            ✅ ¡Email enviado! Revisa tu bandeja de entrada y sigue las instrucciones.
                         </div>
-                    )
-                    : (
-                        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                            <div>
-                                <label style={shared.label}>TU EMAIL</label>
-                                <input
-                                    type="email"
-                                    placeholder="laura@ejemplo.com"
-                                    value={email}
-                                    onChange={e => { setEmail(e.target.value); setError(''); }}
-                                    style={shared.input}
-                                    autoComplete="email"
-                                />
-                            </div>
+                        <button
+                            onClick={onGoLogin}
+                            className="btn btn--primary"
+                            style={{ marginTop: '16px' }}
+                        >
+                            Volver al login
+                        </button>
+                    </div>
+                ) : (
+                    <form onSubmit={handleSubmit} className="form">
 
-                            {error && <div style={shared.error}>⚠️ {error}</div>}
+                        <div className="form-group">
+                            <label className="form-label">Tu email</label>
+                            <input
+                                type="email"
+                                placeholder="laura@ejemplo.com"
+                                value={email}
+                                onChange={e => { setEmail(e.target.value); setError(''); }}
+                                className="form-input"
+                                autoComplete="email"
+                            />
+                        </div>
 
-                            <button
-                                type="submit" disabled={loading}
-                                style={{ ...shared.btnPrimary, opacity: loading ? 0.7 : 1 }}
-                                onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#2D5239'; }}
-                                onMouseLeave={e => { if (!loading) e.currentTarget.style.background = '#355E45'; }}
-                            >
-                                {loading ? '⏳ Enviando...' : '📧 Enviar enlace'}
-                            </button>
+                        {error && <div className="alert alert--error">⚠️ {error}</div>}
 
-                            <div style={{ textAlign: 'center' }}>
-                                <span style={shared.link} onClick={onGoLogin}>← Volver al login</span>
-                            </div>
-                        </form>
-                    )
-                }
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="btn btn--primary"
+                        >
+                            {loading ? '⏳ Enviando...' : '📧 Enviar enlace'}
+                        </button>
+
+                        <div style={{ textAlign: 'center' }}>
+                            <span className="auth-link" onClick={onGoLogin}>← Volver al login</span>
+                        </div>
+
+                    </form>
+                )}
             </div>
         </div>
     );

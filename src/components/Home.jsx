@@ -1,16 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-// ─── Datos mock (reemplazar por fetch real) ────────────────────────────────
-const MOCK_PLANTS = [
-  { id: 1, name: 'Monstera',   species: 'Monstera deliciosa',   lastWatered: '2026-05-07', frequency: 7,  location: 'Salón' },
-  { id: 2, name: 'Pothos',     species: 'Epipremnum aureum',    lastWatered: '2026-05-04', frequency: 5,  location: 'Cocina' },
-  { id: 3, name: 'Cactus',     species: 'Echinopsis oxygona',   lastWatered: '2026-04-20', frequency: 21, location: 'Ventana' },
-  { id: 4, name: 'Orquídea',   species: 'Phalaenopsis hybrid',  lastWatered: '2026-05-09', frequency: 10, location: 'Dormitorio' },
-  { id: 5, name: 'Ficus',      species: 'Ficus lyrata',         lastWatered: '2026-05-06', frequency: 6,  location: 'Estudio' },
-  { id: 6, name: 'Aloe Vera',  species: 'Aloe barbadensis',     lastWatered: '2026-04-28', frequency: 14, location: 'Baño' },
-];
-
 // ─── Utilidades de riego ───────────────────────────────────────────────────
 const getWateringInfo = (lastWatered, frequency) => {
   const last   = new Date(lastWatered);
