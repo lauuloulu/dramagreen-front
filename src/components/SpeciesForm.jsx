@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { inputStyle, btnPrimary } from '../styles/formStyles';
 import ErrorBox from './ErrorBox';
+
 // ── Opciones de luz ───────────────────────────────────────────────────────
 const LIGHT_OPTIONS = [
     { value: 'LOW', label: 'Baja', emoji: '🌑', description: 'Rincones alejados de ventanas' },
