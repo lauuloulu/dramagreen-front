@@ -5,7 +5,7 @@ import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import PlantDashboard from './components/PlantDashboard';
 import PlantForm from './components/PlantForm';
-import SpeciesForm from './components/Speciesform';
+import SpeciesForm from './components/SpeciesForm';
 import PlantDetail from './components/PlantDetail';
 
 function App() {
