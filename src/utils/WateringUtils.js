@@ -13,5 +13,5 @@ export const getWateringInfo = (lastWatered, frequency) => {
         return { ratio, color: '#4CAF50', label: `${daysLeft}d`, emoji: '💧', daysLeft };
     if (daysLeft > 0)
         return { ratio, color: '#FFC107', label: `${daysLeft}d`, emoji: '⚠️', daysLeft };
-    return { ratio, color: '#F44336', label: daysLeft === 0 ? '¡Hoy!' : `¡${Math.abs(daysLeft)}d!`, emoji: '🆘', daysLeft };
+    return { ratio, color: '#F44336', label: daysLeft <= 0 ? '¡Hoy!' : `¡${Math.abs(daysLeft)}d!`, emoji: '🆘', daysLeft };
 };

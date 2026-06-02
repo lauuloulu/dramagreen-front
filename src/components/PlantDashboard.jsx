@@ -5,11 +5,11 @@ import { ROOMS } from '../constants/rooms';
 import { getWateringInfo } from '../utils/WateringUtils';
 
 const PlantDashboard = ({ onViewPlant, onNewPlant, onNewSpecies }) => {
-  const [plants, setPlants]       = useState([]);
-  const [loading, setLoading]     = useState(true);
+  const [plants, setPlants] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [roomIndex, setRoomIndex] = useState(0);
-  const [animDir, setAnimDir]     = useState(null);
-  const [visible, setVisible]     = useState(true);
+  const [animDir, setAnimDir] = useState(null);
+  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
     const fetchPlants = async () => {
@@ -18,12 +18,12 @@ const PlantDashboard = ({ onViewPlant, onNewPlant, onNewSpecies }) => {
         setPlants(data);
       } catch {
         setPlants([
-          { id: 1, nickname: 'Carmela',       speciesName: 'Monstera deliciosa', locationName: 'Salón',      imageUrl: '/avatar/plants/monstera.png',    lastWatered: '2026-05-10', wateringFrequency: 7  },
-          { id: 2, nickname: 'Pepita',         speciesName: 'Epipremnum aureum',  locationName: 'Cocina',     imageUrl: '/avatar/plants/pothos.png',       lastWatered: '2026-05-08', wateringFrequency: 5  },
-          { id: 3, nickname: 'Señor Pinchos',  speciesName: 'Echinopsis',         locationName: 'Estudio',    imageUrl: '/avatar/plants/cactusLargo.png',  lastWatered: '2026-04-20', wateringFrequency: 21 },
-          { id: 4, nickname: 'Diva',           speciesName: 'Phalaenopsis',       locationName: 'Dormitorio', imageUrl: '/avatar/plants/orquidea.png',     lastWatered: '2026-05-12', wateringFrequency: 10 },
-          { id: 5, nickname: 'Gigante',        speciesName: 'Ficus lyrata',       locationName: 'Salón',      imageUrl: '/avatar/plants/ficusGrande.png',  lastWatered: '2026-05-09', wateringFrequency: 6  },
-          { id: 6, nickname: 'Cleopatra',      speciesName: 'Aloe barbadensis',   locationName: 'Baño',       imageUrl: '/avatar/plants/aloeVera.png',     lastWatered: '2026-04-28', wateringFrequency: 14 },
+          { id: 1, nickname: 'Carmela', speciesName: 'Monstera deliciosa', locationName: 'Salón', imageUrl: '/avatar/plants/monstera.png', lastWatered: '2026-05-10', wateringFrequency: 7 },
+          { id: 2, nickname: 'Pepita', speciesName: 'Epipremnum aureum', locationName: 'Cocina', imageUrl: '/avatar/plants/pothos.png', lastWatered: '2026-05-08', wateringFrequency: 5 },
+          { id: 3, nickname: 'Señor Pinchos', speciesName: 'Echinopsis', locationName: 'Estudio', imageUrl: '/avatar/plants/cactusLargo.png', lastWatered: '2026-04-20', wateringFrequency: 21 },
+          { id: 4, nickname: 'Diva', speciesName: 'Phalaenopsis', locationName: 'Dormitorio', imageUrl: '/avatar/plants/orquidea.png', lastWatered: '2026-05-12', wateringFrequency: 10 },
+          { id: 5, nickname: 'Gigante', speciesName: 'Ficus lyrata', locationName: 'Salón', imageUrl: '/avatar/plants/ficusGrande.png', lastWatered: '2026-05-09', wateringFrequency: 6 },
+          { id: 6, nickname: 'Cleopatra', speciesName: 'Aloe barbadensis', locationName: 'Baño', imageUrl: '/avatar/plants/aloeVera.png', lastWatered: '2026-04-28', wateringFrequency: 14 },
         ]);
       } finally {
         setLoading(false);
@@ -32,9 +32,9 @@ const PlantDashboard = ({ onViewPlant, onNewPlant, onNewSpecies }) => {
     fetchPlants();
   }, []);
 
-  const currentRoom  = ROOMS[roomIndex];
-  const roomPlants   = plants.filter(p => p.locationName === currentRoom.key);
-  const urgentCount  = plants.filter(p => {
+  const currentRoom = ROOMS[roomIndex];
+  const roomPlants = plants.filter(p => p.locationName === currentRoom.key);
+  const urgentCount = plants.filter(p => {
     const { daysLeft } = getWateringInfo(p.lastWatered, p.wateringFrequency);
     return typeof daysLeft !== 'undefined' && daysLeft <= 0;
   }).length;
@@ -61,26 +61,29 @@ const PlantDashboard = ({ onViewPlant, onNewPlant, onNewSpecies }) => {
     <div className="page">
 
       {/* ── Barra superior ── */}
-      <div className="dashboard-topbar">
-        <div className="dashboard-topbar__info">
-          <h1 className="dashboard-topbar__title">🌿 DramaGreen</h1>
-          <p className="dashboard-topbar__sub">
-            {plants.length} plantas ·{' '}
-            {urgentCount > 0
-              ? <span className="dashboard-topbar__urgent">{urgentCount} necesitan riego 💧</span>
-              : <span className="dashboard-topbar__ok">Todas al día ✓</span>
-            }
-          </p>
+      <nav className="dashboard-topbar">
+        <div className="dashboard-topbar__brand">
+          <span className="dashboard-topbar__sep" />
+          <div className="dashboard-topbar__status">
+            <span className="dashboard-topbar__count">
+              <strong>{plants.length}</strong> plantas
+            </span>
+            <span className="dashboard-topbar__sep" />
+            <span className={`dashboard-topbar__dot ${urgentCount > 0 ? 'dashboard-topbar__dot--warn' : 'dashboard-topbar__dot--ok'}`} />
+            <span className={`dashboard-topbar__pill ${urgentCount > 0 ? 'dashboard-topbar__pill--warn' : 'dashboard-topbar__pill--ok'}`}>
+              {urgentCount > 0 ? `${urgentCount} necesitan riego` : 'Todas al día'}
+            </span>
+          </div>
         </div>
         <div className="dashboard-topbar__actions">
-          <button className="btn btn--new" onClick={onNewPlant}>
-            + <span>Nueva planta</span>
+          <button className="btn btn--secondary" onClick={onNewSpecies}>
+            <i className="ti ti-leaf" /> Nueva especie
           </button>
-          <button className="btn btn--new btn--new-species" onClick={onNewSpecies}>
-            + <span>Nueva especie</span>
+          <button className="btn btn--primary" onClick={onNewPlant}>
+            <i className="ti ti-plus" /> Nueva planta
           </button>
         </div>
-      </div>
+      </nav>
 
       {/* ── Hero habitación ── */}
       <div className="room-hero">
@@ -100,7 +103,7 @@ const PlantDashboard = ({ onViewPlant, onNewPlant, onNewSpecies }) => {
         />
 
         {/* Gradiente solo en la parte inferior — menos agresivo */}
-        <div className="room-hero__gradient"/>
+        <div className="room-hero__gradient" />
 
         {/* Info habitación */}
         <div
@@ -158,7 +161,7 @@ const PlantDashboard = ({ onViewPlant, onNewPlant, onNewSpecies }) => {
         {loading ? (
           <div className="plant-grid">
             {[1, 2, 3, 4].map(i => (
-              <div key={i} className="skeleton" style={{ height: '200px' }}/>
+              <div key={i} className="skeleton" style={{ height: '200px' }} />
             ))}
           </div>
         ) : roomPlants.length === 0 ? (
