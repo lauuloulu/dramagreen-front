@@ -175,6 +175,7 @@ const PlantDetail = ({ plantId, onBack, onEdit, onDeleted }) => {
         setTimeout(() => setToast(null), 3000);
     };
 
+    useEffect(() => {
     const fetchPlant = async () => {
         try {
             const { data } = await api.get(`/plants/${plantId}`);
@@ -186,7 +187,8 @@ const PlantDetail = ({ plantId, onBack, onEdit, onDeleted }) => {
         }
     };
 
-    useEffect(() => { fetchPlant(); }, [plantId]);
+    fetchPlant();
+}, [plantId]);
 
     const handleWater = async (method, notes) => {
         setWateringLoading(true);
