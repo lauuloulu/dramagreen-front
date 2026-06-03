@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import api from '../Api';
-import { BASE } from '../styles/authStyles';
 
 export const Login = ({ onLoginSuccess, onGoRegister, onGoForgot }) => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
@@ -21,7 +20,7 @@ export const Login = ({ onLoginSuccess, onGoRegister, onGoForgot }) => {
     setLoading(true);
     const token = btoa(`${credentials.username}:${credentials.password}`);
     try {
-      const response = await api.get(`${BASE}/me`, {
+      const response = await api.get(`auth/me`, {
         headers: { Authorization: `Basic ${token}` },
       });
       localStorage.setItem('auth_token', token);

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import api from '../Api';
-import { BASE } from '../styles/authStyles';
 
 export const ForgotPassword = ({ onGoLogin }) => {
     const [email, setEmail] = useState('');
@@ -15,7 +14,7 @@ export const ForgotPassword = ({ onGoLogin }) => {
         setLoading(true);
         setError('');
         try {
-            await api.post(`${BASE}/forgot-password`, null, { params: { email } });
+            await api.post(`auth/forgot-password`, null, { params: { email } });
             setSuccess(true);
         } catch (err) {
             setError(err.response?.data?.message || 'Error al enviar el email');

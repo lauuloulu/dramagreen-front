@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import api from '../Api';
-import { BASE } from '../styles/authStyles';
 
 export const Register = ({ onGoLogin }) => {
     const [form, setForm] = useState({ name: '', surname: '', email: '', password: '', confirmPassword: '' });
@@ -29,7 +28,7 @@ export const Register = ({ onGoLogin }) => {
 
         setLoading(true);
         try {
-            const { data } = await api.post(`${BASE}/register`, {
+            const { data } = await api.post(`auth/register`, {
                 name: form.name,
                 surname: form.surname,
                 email: form.email,
@@ -73,7 +72,7 @@ export const Register = ({ onGoLogin }) => {
                             <div className="form-group">
                                 <label className="form-label">Nombre</label>
                                 <input
-                                    name="name" placeholder="Laura"
+                                    name="name" placeholder="Nombre"
                                     value={form.name} onChange={handleChange}
                                     className="form-input" autoComplete="given-name"
                                 />
@@ -81,7 +80,7 @@ export const Register = ({ onGoLogin }) => {
                             <div className="form-group">
                                 <label className="form-label">Apellido</label>
                                 <input
-                                    name="surname" placeholder="Prat"
+                                    name="surname" placeholder="Apellido"
                                     value={form.surname} onChange={handleChange}
                                     className="form-input" autoComplete="family-name"
                                 />

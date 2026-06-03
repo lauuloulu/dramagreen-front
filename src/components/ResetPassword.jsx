@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import api from '../Api';
-import { BASE } from '../styles/authStyles';
 
 export const ResetPassword = ({ onGoLogin }) => {
     const [form, setForm] = useState({ password: '', confirmPassword: '' });
@@ -18,7 +17,7 @@ export const ResetPassword = ({ onGoLogin }) => {
 
         setLoading(true);
         try {
-            await api.post(`${BASE}/reset-password`, null, {
+            await api.post(`auth/reset-password`, null, {
                 params: { token, newPassword: form.password },
             });
             setSuccess(true);
