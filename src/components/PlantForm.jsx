@@ -35,7 +35,8 @@ const PlantForm = ({ plant, onSuccess, onCancel }) => {
         ]);
         setSpecies(speciesRes.data);
         setLocations(locationsRes.data);
-      } catch {
+      } catch(err) {
+        console.error('Error cargando species/locations:', err);
         setSpecies([
           { id: 1, commonName: 'Monstera deliciosa' },
           { id: 2, commonName: 'Epipremnum aureum' },
