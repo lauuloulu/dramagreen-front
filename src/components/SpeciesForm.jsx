@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import api from '../Api';
 import { inputStyle, btnPrimary } from '../styles/formStyles';
 import ErrorBox from './ErrorBox';
 
@@ -110,7 +110,7 @@ const SpeciesForm = ({ onSuccess, onCancel }) => {
         setLoading(true);
         setError('');
         try {
-            await axios.post(`${import.meta.env.VITE_API_URL}/species`, form);
+            await api.post(`${import.meta.env.VITE_API_URL}/species`, form);
             onSuccess?.();
         } catch (err) {
             setError(err.response?.data?.message || 'Error al guardar la especie');

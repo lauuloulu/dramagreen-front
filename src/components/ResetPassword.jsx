@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import api from '../Api';
 import { BASE } from '../styles/authStyles';
 
 export const ResetPassword = ({ onGoLogin }) => {
@@ -18,7 +18,7 @@ export const ResetPassword = ({ onGoLogin }) => {
 
         setLoading(true);
         try {
-            await axios.post(`${BASE}/reset-password`, null, {
+            await api.post(`${BASE}/reset-password`, null, {
                 params: { token, newPassword: form.password },
             });
             setSuccess(true);

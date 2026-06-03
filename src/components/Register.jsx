@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import api from '../Api';
 import { BASE } from '../styles/authStyles';
 
 export const Register = ({ onGoLogin }) => {
@@ -29,7 +29,7 @@ export const Register = ({ onGoLogin }) => {
 
         setLoading(true);
         try {
-            const { data } = await axios.post(`${BASE}/register`, {
+            const { data } = await api.post(`${BASE}/register`, {
                 name: form.name,
                 surname: form.surname,
                 email: form.email,
