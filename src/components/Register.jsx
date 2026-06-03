@@ -28,7 +28,7 @@ export const Register = ({ onGoLogin }) => {
 
         setLoading(true);
         try {
-            const { data } = await api.post(`auth/register`, {
+            const { data } = await api.post(`/auth/register`, {
                 name: form.name,
                 surname: form.surname,
                 email: form.email,

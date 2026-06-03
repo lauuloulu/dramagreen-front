@@ -20,7 +20,7 @@ export const Login = ({ onLoginSuccess, onGoRegister, onGoForgot }) => {
     setLoading(true);
     const token = btoa(`${credentials.username}:${credentials.password}`);
     try {
-      const response = await api.get(`auth/me`, {
+      const response = await api.get(`/auth/me`, {
         headers: { Authorization: `Basic ${token}` },
       });
       localStorage.setItem('auth_token', token);
