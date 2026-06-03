@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../Api';
 import PlantCard from './PlantCard';
 import { ROOMS } from '../constants/rooms';
 import { getWateringInfo } from '../utils/WateringUtils';
@@ -14,7 +14,7 @@ const PlantDashboard = ({ onViewPlant, onNewPlant, onNewSpecies }) => {
   useEffect(() => {
     const fetchPlants = async () => {
       try {
-        const { data } = await axios.get('http://localhost:9000/api/plants/my');
+        const { data } = await api.get('/plants/my');
         setPlants(data);
       } catch {
         setPlants([

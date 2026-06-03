@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import api from '../Api';
 import { getWateringInfo } from '../utils/WateringUtils';
 
 const PlantCard = ({ plant, onClick, onWatered }) => {
@@ -15,8 +15,8 @@ const PlantCard = ({ plant, onClick, onWatered }) => {
         e.stopPropagation();
         setWatering(true);
         try {
-            const { data } = await axios.post(
-                `http://localhost:9000/api/plants/${localPlant.id}/water`
+            const { data } = await api.post(
+                `/plants/${localPlant.id}/water`
             );
             setLocalPlant(data);
             onWatered?.();

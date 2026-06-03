@@ -110,7 +110,7 @@ const SpeciesForm = ({ onSuccess, onCancel }) => {
         setLoading(true);
         setError('');
         try {
-            await axios.post('http://localhost:9000/api/species', form);
+            await axios.post(`${import.meta.env.VITE_API_URL}/species`, form);
             onSuccess?.();
         } catch (err) {
             setError(err.response?.data?.message || 'Error al guardar la especie');

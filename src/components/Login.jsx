@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import api from '../Api';
 import { BASE } from '../styles/authStyles';
 
 export const Login = ({ onLoginSuccess, onGoRegister, onGoForgot }) => {
@@ -21,13 +21,13 @@ export const Login = ({ onLoginSuccess, onGoRegister, onGoForgot }) => {
     setLoading(true);
     const token = btoa(`${credentials.username}:${credentials.password}`);
     try {
-      const response = await axios.get(`${BASE}/me`, {
+      const response = await api.get(`${BASE}/me`, {
         headers: { Authorization: `Basic ${token}` },
       });
       localStorage.setItem('auth_token', token);
       localStorage.setItem('username', credentials.username);
       localStorage.setItem('role', response.data.roles?.[0]?.authority || 'USER');
-      axios.defaults.headers.common['Authorization'] = `Basic ${token}`;
+      api.defaults.headers.common['Authorization'] = `Basic ${token}`;
       onLoginSuccess();
     } catch {
       setError('Credenciales incorrectas. La planta llora. 💧');

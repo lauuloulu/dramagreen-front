@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import api from '../Api';
 import { BASE } from '../styles/authStyles';
 
 export const ForgotPassword = ({ onGoLogin }) => {
@@ -15,7 +15,7 @@ export const ForgotPassword = ({ onGoLogin }) => {
         setLoading(true);
         setError('');
         try {
-            await axios.post(`${BASE}/forgot-password`, null, { params: { email } });
+            await api.post(`${BASE}/forgot-password`, null, { params: { email } });
             setSuccess(true);
         } catch (err) {
             setError(err.response?.data?.message || 'Error al enviar el email');

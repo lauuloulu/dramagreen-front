@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../Api';
 import { inputStyle, btnPrimary } from '../styles/formStyles';
 import AvatarSelector from './AvatarSelector';
 import ErrorBox from './ErrorBox';
@@ -30,8 +30,8 @@ const PlantForm = ({ plant, onSuccess, onCancel }) => {
     const fetchData = async () => {
       try {
         const [speciesRes, locationsRes] = await Promise.all([
-          axios.get('http://localhost:9000/api/species'),
-          axios.get('http://localhost:9000/api/locations'),
+          api.get('/species'),
+          api.get('/locations'),
         ]);
         setSpecies(speciesRes.data);
         setLocations(locationsRes.data);
@@ -79,10 +79,10 @@ const PlantForm = ({ plant, onSuccess, onCancel }) => {
     setError('');
     try {
         if (isEditing) {
-            const res = await axios.put(`http://localhost:9000/api/plants/${plant.id}`, form);
+            const res = await api.put(`/plants/${plant.id}`, form);
             onSuccess?.(res.data);
         } else {
-            await axios.post('http://localhost:9000/api/plants', form);
+            await api.post('/plants', form);
             onSuccess?.();
         }
     } catch (err) {

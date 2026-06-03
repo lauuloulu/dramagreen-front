@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../Api';
 import { getWateringInfo } from '../utils/WateringUtils';
 
 // ── Utilidades ────────────────────────────────────────────────────────────
@@ -177,7 +177,7 @@ const PlantDetail = ({ plantId, onBack, onEdit, onDeleted }) => {
 
     const fetchPlant = async () => {
         try {
-            const { data } = await axios.get(`http://localhost:9000/api/plants/${plantId}`);
+            const { data } = await api.get(`/plants/${plantId}`);
             setPlant(data);
         } catch {
             showToast('No se pudo cargar la planta', 'error');
@@ -191,8 +191,8 @@ const PlantDetail = ({ plantId, onBack, onEdit, onDeleted }) => {
     const handleWater = async (method, notes) => {
         setWateringLoading(true);
         try {
-            const { data } = await axios.post(
-                `http://localhost:9000/api/plants/${plantId}/water/detailed`,
+            const { data } = await api.post(
+                `/plants/${plantId}/water/detailed`,
                 null,
                 { params: { method, ...(notes?.trim() && { notes }) } }
             );
@@ -209,7 +209,7 @@ const PlantDetail = ({ plantId, onBack, onEdit, onDeleted }) => {
     const handleFertilize = async () => {
         setFertilizingLoading(true);
         try {
-            const { data } = await axios.post(`http://localhost:9000/api/plants/${plantId}/fertilize`);
+            const { data } = await api.post(`/plants/${plantId}/fertilize`);
             setPlant(data);
             showToast('¡Planta fertilizada! 🌱');
         } catch {
@@ -222,7 +222,7 @@ const PlantDetail = ({ plantId, onBack, onEdit, onDeleted }) => {
     const handleDelete = async () => {
         setDeleteLoading(true);
         try {
-            await axios.delete(`http://localhost:9000/api/plants/${plantId}`);
+            await api.delete(`/plants/${plantId}`);
             onDeleted?.();
         } catch {
             showToast('Error al borrar la planta', 'error');
