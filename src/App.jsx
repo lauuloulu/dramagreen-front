@@ -9,8 +9,11 @@ import SpeciesForm from './components/SpeciesForm';
 import PlantDetail from './components/PlantDetail';
 
 function App() {
+  const params = new URLSearchParams(window.location.search);
+  const resetToken = params.get('token');
+
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('auth_token'));
-  const [authView, setAuthView]   = useState('login');
+  const [authView, setAuthView]   = useState(resetToken ? 'reset' : 'login');
   const [view, setView] = useState('dashboard'); // 'dashboard' | 'new-plant' | 'plant-detail'
   const [selectedPlant, setSelectedPlant] = useState(null);
   const [detailKey, setDetailKey] = useState(0); // Para forzar re-render en PlantDetail
